@@ -10,7 +10,7 @@ services:
       # Flask server
       - "5000:5000"
       # Flask server debug port
-      - "5678:5678"
+      # - "5678:5678"
     environment:
       # Specify the path within our Docker container that contains our application code
       FLASK_APP: /code/app.py
@@ -19,17 +19,17 @@ services:
     volumes:
       # Map our local directory to our Docker application root so that any changes we make are immediately available
       - ./BackPython/:/code
-    depends_on:
-      - redis
-  redis:
-    image: redis
+    #   depends_on:
+    #     - redis
+    # redis:
+    #   image: redis
     # ports:
     #   - "6379:6379"
   nextjs:
     ports:
       - 3000:3000
-      - 9229:9229
-      - 6006:6006
+      # - 9229:9229
+      # - 6006:6006
     build:
       context: ./FrontNextjsReact/todo
       dockerfile: Dockerfile
@@ -42,4 +42,3 @@ services:
       - ./FrontNextjsReact/todo/.env.local
     depends_on:
       - python-flask
-  
