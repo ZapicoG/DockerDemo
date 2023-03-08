@@ -51,7 +51,7 @@ def create_tables():
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
 
-    tasks = Task.query.all()
+    tasks = Task.query.filter(Task.status != 3).all()
     return jsonify([task.to_dict() for task in tasks])
 
 
@@ -103,7 +103,7 @@ def delete_task(id):
     task = Task.query.get(id)
     if task is None:
         return jsonify({'error': 'Task not found'}), 404
-    db.session.delete(task)
+    task.status = 3
     db.session.commit()
     send_email_alert(
         'Task deleted', 'A task has been deleted with title: ' + task.title)
