@@ -26,7 +26,7 @@ services:
       context: ./FrontNextjsReact/todo
       dockerfile: Dockerfile
     volumes:
-      - ./FrontNextjsReact/todo:/usr/src/app
+      - ./FrontNextjsReact/todo:/app
       # Prevent the node_modules and .next folders in the Docker container from being accidentally overwritten with our initial mapping of our local directory to /usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/.next

@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
+from flask_cors import CORS, cross_origin
 
 
 # Database and App initialization:
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -55,6 +57,21 @@ def get_tasks():
     return jsonify([task.to_dict() for task in tasks])
 
 
+@app.route('/tasks/paginated', methods=['GET'])
+def get_tasks_paginated():
+    page = int(request.args["page"])
+    per_page = int(request.args["per_page"])
+    if request.args.get("status") != None:
+        status = (int(request.args["status"]))
+    else:
+        status = 0
+    # print(page, per_page)
+    tasks = Task.query.filter(Task.status != 3, Task.status != status).paginate(
+        page=page, per_page=per_page, count=True)
+
+    return jsonify(tasks.total, [task.to_dict() for task in tasks])
+
+
 @app.route('/tasks/<int:task_id>', methods=['GET'])
 def get_task(task_id):
     task = Task.query.get(task_id)
@@ -90,11 +107,27 @@ def update_task(id):
     task.title = data['title']
     task.description = data['description']
     task.status = data['status']
-
+    title = task.title
     db.session.commit()
 
     send_email_alert(
-        'Task updated', 'A task has been updated with title: ' + data['title'])
+        'Task updated', 'A task has been updated with title: ' + title)
+    return jsonify(task.to_dict())
+
+
+@app.route('/tasks/toggle/<int:id>', methods=['PUT'])
+def toggle_task(id):
+    task = Task.query.get(id)
+
+    if task is None:
+        return jsonify({'error': 'Task not found'}), 404
+
+    task.status = 1 if task.status == 2 else 2
+    title = task.title
+    db.session.commit()
+
+    send_email_alert(
+        'Task updated', 'A task has been updated with title: ' + title)
     return jsonify(task.to_dict())
 
 
@@ -112,6 +145,7 @@ def delete_task(id):
 
 # Extra methods:
 def send_email_alert(subject, body):
+    return
     message = Message(subject=subject, sender='your_email@example.com',
                       recipients=['recipient@example.com'])
     message.body = body
