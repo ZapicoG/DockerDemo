@@ -125,6 +125,7 @@ export default function InteractiveList() {
         </Box>
         <FormControlLabel 
         key={"paginationSettings"}
+        label={"Settings"}
           control={
             <Box>
               <label key={"page"}>
