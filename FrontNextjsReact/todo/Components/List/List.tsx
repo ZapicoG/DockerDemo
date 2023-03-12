@@ -24,15 +24,15 @@ const Demo = styled("div")(({ theme }) => ({
 }));
 
 
-const back_url = "http://3.143.218.76/tasks"
+const back_url = "https://dockerdemo-production.up.railway.app/tasks"
 
-const https = require('https');
+// const https = require('https');
 
-const instance = axios.create({
-  httpsAgent: new https.Agent({  
-    rejectUnauthorized: false
-  })
-});
+// const instance = axios.create({
+//   httpsAgent: new https.Agent({  
+//     rejectUnauthorized: false
+//   })
+// });
 
 export default function InteractiveList() {
   const [dense, setDense] = React.useState(false);
@@ -50,7 +50,7 @@ export default function InteractiveList() {
   const fetchTasks = async () => {
 
     if (toggleBack) {
-      let tasks = await instance.get(`${back_url}/paginated`, {
+      let tasks = await axios.get(`${back_url}/paginated`, {
         params: {
           page: pagination.page,
           per_page: pagination.per_page,
@@ -60,7 +60,7 @@ export default function InteractiveList() {
       setMaxPages(Math.ceil(tasks.data[0] / pagination.per_page));
       setTasks([...tasks.data[1]]);
     } else {
-      let tasks = await instance.get(`${back_url}`);
+      let tasks = await axios.get(`${back_url}`);
       setAllTasks([...tasks.data]);
     }
   };

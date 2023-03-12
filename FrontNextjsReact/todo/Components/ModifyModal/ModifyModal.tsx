@@ -7,7 +7,7 @@ import { Item } from "../../Types/Types";
 import axios from "axios";
 
 
-const back_url = "http://3.143.218.76/tasks"
+const back_url = "https://dockerdemo-production.up.railway.app/tasks"
 
 const style = {
   position: "absolute",
@@ -34,18 +34,18 @@ export default function ModifyModal(props) {
     status: props.status,
   });
 
-  const https = require('https');
+  // const https = require('https');
 
 
-  const instance = axios.create({
-    httpsAgent: new https.Agent({  
-      rejectUnauthorized: false
-    })
-  });
+  // const instance = axios.create({
+  //   httpsAgent: new https.Agent({  
+  //     rejectUnauthorized: false
+  //   })
+  // });
 
 
   const handleEdit = async (data: Item) => {
-    await instance.put(`${back_url}/${data.id}`, {
+    await axios.put(`${back_url}/${data.id}`, {
       title: data.title,
       description: data.description,
       status: data.status,

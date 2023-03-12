@@ -8,7 +8,7 @@ import { Item } from "../../Types/Types";
 
 
 
-const back_url = "http://3.143.218.76/tasks"
+const back_url = "https://dockerdemo-production.up.railway.app/tasks"
 
 const style = {
   position: "absolute",
@@ -35,17 +35,17 @@ export default function NewItem(props) {
   });
 
 
-  const https = require('https');
+  // const https = require('https');
 
-  const instance = axios.create({
-    httpsAgent: new https.Agent({  
-      rejectUnauthorized: false
-    })
-  });
+  // const instance = axios.create({
+  //   httpsAgent: new https.Agent({  
+  //     rejectUnauthorized: false
+  //   })
+  // });
 
 
   const handleCreate = async () => {
-    const res = await instance.post(`${back_url}`, {
+    const res = await axios.post(`${back_url}`, {
       title: data.title,
       description: data.description,
       status: data.status,

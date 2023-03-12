@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import { Item as ItemType } from "../../Types/Types";
 
 
-const back_url = "http://3.143.218.76/tasks"
+const back_url = "https://dockerdemo-production.up.railway.app/tasks"
 
 export default function Item(props) {
   const [data, setData] = React.useState<ItemType>({
@@ -27,13 +27,13 @@ export default function Item(props) {
   const [edit, setEdit] = React.useState(false);
 
 
-  const https = require('https');
+  // const https = require('https');
 
-  const instance = axios.create({
-    httpsAgent: new https.Agent({  
-      rejectUnauthorized: false
-    })
-  });
+  // const instance = axios.create({
+  //   httpsAgent: new https.Agent({  
+  //     rejectUnauthorized: false
+  //   })
+  // });
 
 
   const handleDelete = async () => {
@@ -49,7 +49,7 @@ export default function Item(props) {
       .then((result) => {
         if (result.isConfirmed) {
           Swal.fire("Deleted!", "Your file has been deleted.", "success");
-          instance.delete(`${back_url}/${data.id}`);
+          axios.delete(`${back_url}/${data.id}`);
         }
       })
       .then(() => {
@@ -59,7 +59,7 @@ export default function Item(props) {
   };
   const toggleComplete = async () => {
     setData({ ...data, status: data.status == 1 ? 2 : 1 });
-    const res = await instance.put(
+    const res = await axios.put(
       `${back_url}/toggle/${data.id}`
     );
     props.fetchTasks();
