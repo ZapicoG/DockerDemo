@@ -6,6 +6,9 @@ import SaveIcon from "@mui/icons-material/Save";
 import { Item } from "../../Types/Types";
 import axios from "axios";
 
+
+const back_url = "http://3.143.218.76/tasks"
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -32,7 +35,7 @@ export default function ModifyModal(props) {
   });
 
   const handleEdit = async (data: Item) => {
-    await axios.put(`http://localhost:5000/tasks/${data.id}`, {
+    await axios.put(`${back_url}/${data.id}`, {
       title: data.title,
       description: data.description,
       status: data.status,

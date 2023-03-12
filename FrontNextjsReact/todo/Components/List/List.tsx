@@ -23,6 +23,9 @@ const Demo = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
+
+const back_url = "http://3.143.218.76/tasks"
+
 export default function InteractiveList() {
   const [dense, setDense] = React.useState(false);
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -37,8 +40,9 @@ export default function InteractiveList() {
   });
 
   const fetchTasks = async () => {
+
     if (toggleBack) {
-      let tasks = await axios.get("http://localhost:5000/tasks/paginated", {
+      let tasks = await axios.get(`${back_url}/paginated`, {
         params: {
           page: pagination.page,
           per_page: pagination.per_page,
@@ -48,7 +52,7 @@ export default function InteractiveList() {
       setMaxPages(Math.ceil(tasks.data[0] / pagination.per_page));
       setTasks([...tasks.data[1]]);
     } else {
-      let tasks = await axios.get("http://localhost:5000/tasks");
+      let tasks = await axios.get(`${back_url}`);
       setAllTasks([...tasks.data]);
     }
   };

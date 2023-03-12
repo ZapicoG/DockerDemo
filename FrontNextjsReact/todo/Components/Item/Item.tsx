@@ -12,6 +12,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Item as ItemType } from "../../Types/Types";
 
+
+const back_url = "http://3.143.218.76/tasks"
+
 export default function Item(props) {
   const [data, setData] = React.useState<ItemType>({
     id: props.id,
@@ -37,7 +40,7 @@ export default function Item(props) {
       .then((result) => {
         if (result.isConfirmed) {
           Swal.fire("Deleted!", "Your file has been deleted.", "success");
-          axios.delete(`http://localhost:5000/tasks/${data.id}`);
+          axios.delete(`${back_url}/${data.id}`);
         }
       })
       .then(() => {
@@ -48,7 +51,7 @@ export default function Item(props) {
   const toggleComplete = async () => {
     setData({ ...data, status: data.status == 1 ? 2 : 1 });
     const res = await axios.put(
-      `http://localhost:5000/tasks/toggle/${data.id}`
+      `${back_url}/toggle/${data.id}`
     );
     props.fetchTasks();
     return;

@@ -6,6 +6,10 @@ import SaveIcon from "@mui/icons-material/Save";
 import axios from "axios";
 import { Item } from "../../Types/Types";
 
+
+
+const back_url = "http://3.143.218.76/tasks"
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -31,7 +35,7 @@ export default function NewItem(props) {
   });
 
   const handleCreate = async () => {
-    const res = await axios.post(`http://localhost:5000/tasks`, {
+    const res = await axios.post(`${back_url}`, {
       title: data.title,
       description: data.description,
       status: data.status,
