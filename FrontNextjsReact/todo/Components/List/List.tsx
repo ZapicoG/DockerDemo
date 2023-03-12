@@ -6,7 +6,7 @@ import Item from "../Item/Item";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import axios, { all } from "axios";
+import axios from "axios";
 import IconButton from "@mui/material/IconButton";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import NewItem from "../NewItem/NewItem";
@@ -26,6 +26,12 @@ const Demo = styled("div")(({ theme }) => ({
 
 const back_url = "http://3.143.218.76/tasks"
 
+const instance = axios.create({
+  httpsAgent: new https.Agent({  
+    rejectUnauthorized: false
+  })
+});
+
 export default function InteractiveList() {
   const [dense, setDense] = React.useState(false);
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -42,7 +48,7 @@ export default function InteractiveList() {
   const fetchTasks = async () => {
 
     if (toggleBack) {
-      let tasks = await axios.get(`${back_url}/paginated`, {
+      let tasks = await instance.get(`${back_url}/paginated`, {
         params: {
           page: pagination.page,
           per_page: pagination.per_page,
@@ -52,7 +58,7 @@ export default function InteractiveList() {
       setMaxPages(Math.ceil(tasks.data[0] / pagination.per_page));
       setTasks([...tasks.data[1]]);
     } else {
-      let tasks = await axios.get(`${back_url}`);
+      let tasks = await instance.get(`${back_url}`);
       setAllTasks([...tasks.data]);
     }
   };

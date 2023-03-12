@@ -26,6 +26,12 @@ export default function Item(props) {
   const [description, setDescription] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
 
+  const instance = axios.create({
+    httpsAgent: new https.Agent({  
+      rejectUnauthorized: false
+    })
+  });
+
 
   const handleDelete = async () => {
     Swal.fire({
@@ -40,7 +46,7 @@ export default function Item(props) {
       .then((result) => {
         if (result.isConfirmed) {
           Swal.fire("Deleted!", "Your file has been deleted.", "success");
-          axios.delete(`${back_url}/${data.id}`);
+          instance.delete(`${back_url}/${data.id}`);
         }
       })
       .then(() => {
@@ -50,7 +56,7 @@ export default function Item(props) {
   };
   const toggleComplete = async () => {
     setData({ ...data, status: data.status == 1 ? 2 : 1 });
-    const res = await axios.put(
+    const res = await instance.put(
       `${back_url}/toggle/${data.id}`
     );
     props.fetchTasks();

@@ -34,8 +34,16 @@ export default function ModifyModal(props) {
     status: props.status,
   });
 
+
+  const instance = axios.create({
+    httpsAgent: new https.Agent({  
+      rejectUnauthorized: false
+    })
+  });
+
+
   const handleEdit = async (data: Item) => {
-    await axios.put(`${back_url}/${data.id}`, {
+    await instance.put(`${back_url}/${data.id}`, {
       title: data.title,
       description: data.description,
       status: data.status,

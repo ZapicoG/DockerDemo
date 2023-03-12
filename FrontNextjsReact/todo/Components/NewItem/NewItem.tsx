@@ -34,8 +34,17 @@ export default function NewItem(props) {
     status: 1,
   });
 
+
+
+  const instance = axios.create({
+    httpsAgent: new https.Agent({  
+      rejectUnauthorized: false
+    })
+  });
+
+
   const handleCreate = async () => {
-    const res = await axios.post(`${back_url}`, {
+    const res = await instance.post(`${back_url}`, {
       title: data.title,
       description: data.description,
       status: data.status,
