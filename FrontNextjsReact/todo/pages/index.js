@@ -4,8 +4,16 @@ import List from "../Components/List/List.tsx";
 
 export default function Home() {
   return (
-    <div className={styles.container}>
-      <List></List>
-    </div>
+    <>
+      <Head>
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
+      </Head>
+      <div className={styles.container}>
+        <List></List>
+      </div>
+    </>
   );
 }
