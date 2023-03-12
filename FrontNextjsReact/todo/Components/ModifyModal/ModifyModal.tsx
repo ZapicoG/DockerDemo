@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Modal from "@mui/material/Modal";
 import SaveIcon from "@mui/icons-material/Save";
+import { Item } from "../../Types/Types";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -22,13 +24,21 @@ export default function ModifyModal(props) {
   //   const handleClose = () => setOpen(false);
   let open = props.open;
   let handleClose = props.handleClose;
-  let handleEdit = props.handleEdit;
-  const [data, setData] = React.useState({
+  const [data, setData] = React.useState<Item>({
     id: props.id,
     title: props.title,
     description: props.description,
     status: props.status,
   });
+
+  const handleEdit = async (data: Item) => {
+    await axios.put(`http://localhost:5000/tasks/${data.id}`, {
+      title: data.title,
+      description: data.description,
+      status: data.status,
+    })
+    props.fetchTasks()
+  };
 
   const handleChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -67,7 +77,7 @@ export default function ModifyModal(props) {
               edge="end"
               aria-label="saveEdit"
               onClick={() => {
-                handleEdit(data);
+                handleEdit(data)
                 handleClose(false);
               }}
             >

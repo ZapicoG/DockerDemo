@@ -7,11 +7,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import Checkbox from "@mui/material/Checkbox";
 import BasicModal from "../Modal/BasicModal";
-import ModifyModal from "../../ModifyModal/ModifyModal";
+import ModifyModal from "../ModifyModal/ModifyModal";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { Item as ItemType } from "../../Types/Types";
 
 export default function Item(props) {
-  const [data, setData] = React.useState({
+  const [data, setData] = React.useState<ItemType>({
     id: props.id,
     title: props.title,
     description: props.description,
@@ -21,18 +23,26 @@ export default function Item(props) {
   const [description, setDescription] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
 
-  const handleEdit = async (data) => {
-    const res = await axios.put(`http://localhost:5000/tasks/${data.id}`, {
-      title: data.title,
-      description: data.description,
-      status: data.status,
-    });
-    props.fetchTasks();
-    return;
-  };
+
   const handleDelete = async () => {
-    const res = await axios.delete(`http://localhost:5000/tasks/${data.id}`);
-    props.fetchTasks();
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Deleted!", "Your file has been deleted.", "success");
+          axios.delete(`http://localhost:5000/tasks/${data.id}`);
+        }
+      })
+      .then(() => {
+        props.fetchTasks();
+      });
     return;
   };
   const toggleComplete = async () => {
@@ -82,8 +92,10 @@ export default function Item(props) {
           ></BasicModal>
           <ModifyModal
             open={edit}
-            handleClose={() => setEdit(false)}
-            handleEdit={handleEdit}
+            handleClose={() => 
+              setEdit(false)
+            }
+            fetchTasks={props.fetchTasks}
             id={props.id}
             title={props.title}
             description={props.description}
@@ -94,7 +106,7 @@ export default function Item(props) {
     >
       <ListItemText
         primary={`${data.title ? data.title : "Loading..."}`}
-        secondary={description ? "Secondary text" : data.id}
+        // secondary={description ? "Secondary text" : data.id}
       />
     </ListItem>
   );

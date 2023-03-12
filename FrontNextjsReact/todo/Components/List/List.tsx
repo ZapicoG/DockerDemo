@@ -6,10 +6,11 @@ import Item from "../Item/Item";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import axios from "axios";
+import axios, { all } from "axios";
 import IconButton from "@mui/material/IconButton";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import NewItem from "../NewItem/NewItem";
+import { Pagination } from "../../Types/Types";
 // function generate(element) {
 //   return [0, 1, 2].map((value) =>
 //     React.cloneElement(element, {
@@ -26,12 +27,13 @@ export default function InteractiveList() {
   const [dense, setDense] = React.useState(false);
   const [openCreate, setOpenCreate] = React.useState(false);
   const [tasks, setTasks] = React.useState([]);
+  const [allTasks, setAllTasks] = React.useState([]);
   const [toggleBack, setToggleBack] = React.useState(true);
   const [maxPages, setMaxPages] = React.useState(1);
-  const [pagination, setPagination] = React.useState({
+  const [pagination, setPagination] = React.useState<Pagination>({
     page: 1,
     per_page: 10,
-    status: 0,
+    filterStatus: 0,
   });
 
   const fetchTasks = async () => {
@@ -40,26 +42,50 @@ export default function InteractiveList() {
         params: {
           page: pagination.page,
           per_page: pagination.per_page,
-          status: pagination.status,
+          status: pagination.filterStatus,
         },
       });
       setMaxPages(Math.ceil(tasks.data[0] / pagination.per_page));
       setTasks([...tasks.data[1]]);
     } else {
       let tasks = await axios.get("http://localhost:5000/tasks");
-      setTasks(tasks.data);
+      setAllTasks([...tasks.data]);
     }
   };
 
+  const filterTasks = () => {
+    const { page, per_page, filterStatus } = pagination;
+    let tasks = allTasks.filter((e) => e.status != filterStatus);
+    let maxPages = Math.ceil(tasks.length / per_page);
+    tasks = tasks.slice((page - 1) * per_page, page * per_page);
+    setMaxPages(maxPages);
+    setTasks([...tasks]);
+  };
+
   React.useEffect(() => {
-    fetchTasks();
+    filterTasks();
+  }, [allTasks]);
+
+  React.useEffect(() => {
+    if (toggleBack) {
+      fetchTasks();
+      return;
+    }
+    if (!toggleBack) {
+      if (allTasks.length == 0) {
+        fetchTasks();
+      }
+      filterTasks();
+      return;
+    }
   }, [pagination, toggleBack]);
 
   return (
-    <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
-      <FormGroup row>
-        <Box>
+    <Box sx={{ flexGrow: 1, maxWidth: 752 }} key={"app"}>
+      <FormGroup row key={"row"}>
+        <Box key={"toogleBox"}>
           <FormControlLabel
+          key={"toggleDense"}
             control={
               <Checkbox
                 checked={dense}
@@ -70,10 +96,14 @@ export default function InteractiveList() {
           />
           <br />
           <FormControlLabel
+          key={"toggleBack"}
             control={
               <Checkbox
                 checked={toggleBack}
                 onChange={(event) => {
+                  if (!toggleBack) {
+                    setAllTasks([]);
+                  }
                   setToggleBack(event.target.checked);
                 }}
               />
@@ -81,10 +111,12 @@ export default function InteractiveList() {
             label="Toggle back pagination"
           />
         </Box>
-        <FormControlLabel
+        <FormControlLabel 
+        key={"paginationSettings"}
+        label={"paginationSettings"}
           control={
             <Box>
-              <label>
+              <label key={"page"}>
                 {" "}
                 Page:
                 <select
@@ -98,13 +130,13 @@ export default function InteractiveList() {
                 </select>
               </label>
               <br />
-              <label>
+              <label key={"per_page"}>
                 {" "}
                 Per Page:
                 <select
                   value={pagination.per_page}
                   onChange={(e) =>
-                    setPagination({ ...pagination, per_page: e.target.value })
+                    setPagination({ ...pagination, per_page: +e.target.value })
                   }
                 >
                   {[...Array(10).keys()].map((e) => (
@@ -113,22 +145,22 @@ export default function InteractiveList() {
                 </select>
               </label>
               <br />
-              <label>
+              <label key={"filterStatus"}>
                 {" "}
                 Status:
                 <select
-                  value={pagination.status}
+                  value={pagination.filterStatus}
                   onChange={(e) =>
                     setPagination({
                       ...pagination,
                       page: 1,
-                      status: e.target.value,
+                      filterStatus: +e.target.value,
                     })
                   }
                 >
-                  <option value="0">All</option>
-                  <option value="2">To Do</option>
-                  <option value="1">Completed</option>
+                  <option value={0}>All</option>
+                  <option value={2}>To Do</option>
+                  <option value={1}>Completed</option>
                 </select>
               </label>
             </Box>
@@ -151,11 +183,21 @@ export default function InteractiveList() {
               key={e.id}
             />
           ))}
+          {/* {[
+            ...Array(
+              pagination.per_page - tasks.length > 0
+                ? pagination.per_page - tasks.length
+                : 0
+            ),
+          ].map((e) => (
+            <Item empty={true}></Item>
+          ))} */}
         </List>
       </Demo>
       <NewItem
         open={openCreate}
         handleClose={() => setOpenCreate(false)}
+        fetchTasks={fetchTasks}
       ></NewItem>
     </Box>
   );

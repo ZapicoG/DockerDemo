@@ -144,12 +144,15 @@ def delete_task(id):
 
 
 # Extra methods:
-def send_email_alert(subject, body):
-    return
-    message = Message(subject=subject, sender='your_email@example.com',
-                      recipients=['recipient@example.com'])
-    message.body = body
-    mail.send(message)
+async def send_email_alert(subject, body):
+    try:
+        message = Message(subject=subject, sender='your_email@example.com',
+                          recipients=['recipient@example.com'])
+        message.body = body
+        mail.send(message)
+    except:
+        print("error")
+    return jsonify(status_code=200, content={"message": "email has been sent"})
 
 
 if __name__ == '__main__':

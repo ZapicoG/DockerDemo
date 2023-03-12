@@ -4,6 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import Modal from "@mui/material/Modal";
 import SaveIcon from "@mui/icons-material/Save";
 import axios from "axios";
+import { Item } from "../../Types/Types";
 
 const style = {
   position: "absolute",
@@ -23,7 +24,7 @@ export default function NewItem(props) {
   //   const handleClose = () => setOpen(false);
   let open = props.open;
   let handleClose = props.handleClose;
-  const [data, setData] = React.useState({
+  const [data, setData] = React.useState<Item>({
     title: null,
     description: null,
     status: 1,
@@ -35,6 +36,7 @@ export default function NewItem(props) {
       description: data.description,
       status: data.status,
     });
+    props.fetchTasks()
   };
 
   const handleChange = (event) => {
@@ -73,7 +75,7 @@ export default function NewItem(props) {
               Status:
               <select
                 name="status"
-                type="string"
+
                 value={data.status}
                 onChange={handleChange}
               >
@@ -86,7 +88,7 @@ export default function NewItem(props) {
               edge="end"
               aria-label="create"
               onClick={() => {
-                handleCreate(data);
+                handleCreate();
                 handleClose(false);
               }}
             >
