@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from flask_cors import CORS, cross_origin
-
+import os
 
 # Database and App initialization:
 
@@ -56,6 +56,8 @@ def get_tasks():
     tasks = Task.query.filter(Task.status != 3).all()
     return jsonify([task.to_dict() for task in tasks])
 
+
+# Test
 
 @app.route('/tasks/paginated', methods=['GET'])
 def get_tasks_paginated():
@@ -156,4 +158,4 @@ async def send_email_alert(subject, body):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=os.getenv("PORT", default=5000))
