@@ -5,12 +5,12 @@ import List from "../Components/List/List.tsx";
 export default function Home() {
   return (
     <>
-      <Head>
+      {/* <Head>
         <meta
           http-equiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
         />
-      </Head>
+      </Head> */}
       <div className={styles.container}>
         <List></List>
       </div>
