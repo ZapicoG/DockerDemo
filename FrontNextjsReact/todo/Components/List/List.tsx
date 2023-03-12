@@ -148,7 +148,7 @@ export default function InteractiveList() {
                 <select
                   value={pagination.per_page}
                   onChange={(e) =>
-                    setPagination({ ...pagination, per_page: +e.target.value })
+                    setPagination({ ...pagination, page: 1, per_page: +e.target.value })
                   }
                 >
                   {[...Array(10).keys()].map((e) => (
