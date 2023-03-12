@@ -34,6 +34,8 @@ export default function ModifyModal(props) {
     status: props.status,
   });
 
+  const https = require('https');
+
 
   const instance = axios.create({
     httpsAgent: new https.Agent({  
