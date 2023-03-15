@@ -7,7 +7,7 @@ import { Item } from "../../Types/Types";
 import axios from "axios";
 
 
-const back_url = "https://dockerdemo-production.up.railway.app/tasks"
+const back_url = process.env.NEXT_PUBLIC_BACK_URL
 
 const style = {
   position: "absolute",

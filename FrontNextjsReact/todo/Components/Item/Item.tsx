@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { Item as ItemType } from "../../Types/Types";
 
 
-const back_url = "https://dockerdemo-production.up.railway.app/tasks"
+const back_url = process.env.NEXT_PUBLIC_BACK_URL
 
 export default function Item(props) {
   const [data, setData] = React.useState<ItemType>({

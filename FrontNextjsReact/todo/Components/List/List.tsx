@@ -12,6 +12,7 @@ import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import { Pagination } from "../../Types/Types";
 import Swal from "sweetalert2";
 
+
 // function generate(element) {
 //   return [0, 1, 2].map((value) =>
 //     React.cloneElement(element, {
@@ -25,7 +26,7 @@ const Demo = styled("div")(({ theme }) => ({
 }));
 
 
-const back_url = "https://dockerdemo-production.up.railway.app/tasks"
+const back_url = process.env.NEXT_PUBLIC_BACK_URL
 
 // const https = require('https');
 
@@ -37,7 +38,7 @@ const back_url = "https://dockerdemo-production.up.railway.app/tasks"
 
 export default function InteractiveList() {
   const [dense, setDense] = React.useState(false);
-  const [openCreate, setOpenCreate] = React.useState(false);
+  // const [openCreate, setOpenCreate] = React.useState(false);
   const [tasks, setTasks] = React.useState([]);
   const [allTasks, setAllTasks] = React.useState([]);
   const [toggleBack, setToggleBack] = React.useState(true);
