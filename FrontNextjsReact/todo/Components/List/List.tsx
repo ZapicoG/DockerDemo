@@ -9,8 +9,9 @@ import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import IconButton from "@mui/material/IconButton";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
-import NewItem from "../NewItem/NewItem";
 import { Pagination } from "../../Types/Types";
+import Swal from "sweetalert2";
+
 // function generate(element) {
 //   return [0, 1, 2].map((value) =>
 //     React.cloneElement(element, {
@@ -73,6 +74,63 @@ export default function InteractiveList() {
     setMaxPages(maxPages);
     setTasks([...tasks]);
   };
+
+
+  const handleCreate = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Create',
+      confirmButtonText: 'Save',
+      html:
+        "<label> Title:" +
+        "<br/>" +
+        `<input id="swal-input1" class="swal2-input">` +
+        "</label>" +
+        "<br/>" +
+        "<label> Description:" +
+        "<br/>" +
+        `<input id="swal-input2" class="swal2-input">` +
+        "</label>" +
+        "<br/>" +
+        "<label> Status:" +
+        `<select id="swal-input3" class="swal2-input" >` +
+        `<option value="1">To Do</option>` +
+        `<option value="2">Completed</option>` +
+        "</select>" +
+        "</label>",
+      focusConfirm: false,
+      showCancelButton: true,
+      preConfirm: () => {
+        return {title: (document.getElementById('swal-input1') as HTMLInputElement).value,
+          description: (document.getElementById('swal-input2') as HTMLInputElement).value,
+          status: + (document.getElementById('swal-input3') as HTMLInputElement).value}
+        
+      }
+    })
+    
+    if (formValues) {
+      const { title, description, status} = formValues
+      Swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+         confirmButtonText: 'Save',
+        denyButtonText: `Don't save`,
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          await axios.post(`${back_url}`, {
+            title,
+            description,
+            status,
+          })
+          fetchTasks();
+          Swal.fire('Saved!', '', 'success')
+        } else if (result.isDenied) {
+          Swal.fire('Changes are not saved', '', 'info')
+        }
+      })
+    }
+
+  }
 
   React.useEffect(() => {
     filterTasks();
@@ -178,7 +236,11 @@ export default function InteractiveList() {
             </Box>
           }
         />
-        <IconButton onClick={() => setOpenCreate(true)}>
+        {/* Old create modal opener */}
+        {/* <IconButton onClick={() => setOpenCreate(true)}>
+          <AddCommentOutlinedIcon />
+        </IconButton> */}
+        <IconButton onClick={() => handleCreate()}>
           <AddCommentOutlinedIcon />
         </IconButton>
       </FormGroup>
@@ -206,11 +268,12 @@ export default function InteractiveList() {
           ))} */}
         </List>
       </Demo>
-      <NewItem
+      {/* Old create modal */}
+      {/* <NewItem
         open={openCreate}
         handleClose={() => setOpenCreate(false)}
         fetchTasks={fetchTasks}
-      ></NewItem>
+      ></NewItem> */}
     </Box>
   );
 }
